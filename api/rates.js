@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
     try {
         const fxRes = await fetch(
-            "http://api.exchangeratesapi.io/v1/latest?access_key=dbe4b0189962c2a1904b5d26b1c73a0c&symbols=INR,USD"
+            "https://api.exchangeratesapi.io/v1/latest?access_key=dbe4b0189962c2a1904b5d26b1c73a0c&symbols=INR,USD"
         )
         const fxData = await fxRes.json()
 

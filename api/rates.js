@@ -20,8 +20,8 @@ export default async function handler(req, res) {
 
         const usdToInr = fxData.rates.INR
 
-        const goldUSD = 2000
-        const silverUSD = 25
+      const goldUSD = 4992.5   // Gold per ounce in USD
+      const silverUSD = 81.43  // Silver per ounce in USD
 
         const goldINR = (goldUSD * usdToInr) / 31.1035
         const silverINR = (silverUSD * usdToInr) / 31.1035

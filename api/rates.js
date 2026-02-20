@@ -12,10 +12,22 @@ export default async function handler(req, res) {
         const fxRes = await fetch(
             "https://api.exchangeratesapi.io/v1/latest?access_key=dbe4b0189962c2a1904b5d26b1c73a0c&symbols=INR,USD"
         )
+
         const fxData = await fxRes.json()
+
+        if (!fxData.success) {
+            return res.status(500).json({
+                error: "Exchange API failed",
+                details: fxData
+            })
+        }
 
         const metalRes = await fetch("https://api.metals.live/v1/spot")
         const metalData = await metalRes.json()
+
+        if (!metalData) {
+            return res.status(500).json({ error: "Metal API failed" })
+        }
 
         const goldUSD = metalData.find(i => i.gold)?.gold
         const silverUSD = metalData.find(i => i.silver)?.silver
@@ -40,6 +52,9 @@ export default async function handler(req, res) {
         return res.status(200).json(cachedData)
 
     } catch (error) {
-        return res.status(500).json({ error: "Failed to fetch rates" })
+        return res.status(500).json({
+            error: "Server crashed",
+            message: error.message
+        })
     }
 }

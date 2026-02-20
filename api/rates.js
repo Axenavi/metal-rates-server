@@ -9,19 +9,24 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Get USD → INR rate (free, no key needed)
+        // Get USD → INR rate
         const fxRes = await fetch(
-            "https://api.exchangerate.host/latest?base=USD&symbols=INR"
+            "https://open.er-api.com/v6/latest/USD"
         )
         const fxData = await fxRes.json()
 
+        if (fxData.result !== "success") {
+            return res.status(500).json({
+                error: "Currency API failed",
+                details: fxData
+            })
+        }
+
         const usdToInr = fxData.rates.INR
 
-        // Use fixed daily gold & silver USD spot fallback
-        // (This avoids unstable commodity APIs)
-
-        const goldUSD = 2000   // You can update manually daily if needed
-        const silverUSD = 25   // Same here
+        // Temporary fixed spot prices (USD per ounce)
+        const goldUSD = 2000
+        const silverUSD = 25
 
         const goldINR = (goldUSD * usdToInr) / 31.1035
         const silverINR = (silverUSD * usdToInr) / 31.1035

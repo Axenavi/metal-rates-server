@@ -2,6 +2,10 @@ let cachedData = null
 let lastFetchDate = null
 
 export default async function handler(req, res) {
+    // ✅ Allow all origins (for Framer)
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Methods", "GET")
+
     const today = new Date().toDateString()
 
     if (cachedData && lastFetchDate === today) {
@@ -9,22 +13,13 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Get USD → INR rate
         const fxRes = await fetch(
             "https://open.er-api.com/v6/latest/USD"
         )
         const fxData = await fxRes.json()
 
-        if (fxData.result !== "success") {
-            return res.status(500).json({
-                error: "Currency API failed",
-                details: fxData
-            })
-        }
-
         const usdToInr = fxData.rates.INR
 
-        // Temporary fixed spot prices (USD per ounce)
         const goldUSD = 2000
         const silverUSD = 25
 
